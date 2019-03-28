@@ -2,14 +2,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
 
 <metadata xmlns="http://java.sun.com/jsf/core">
   <event type="preRenderView" listener="#{rest.respond}"/>
 </metadata>
 
 <head>
-  <title>Powertac WeatherServer</title>
+  <title>PowerTAC WeatherServer</title>
 </head>
 
 <body>
@@ -58,9 +59,18 @@
   <b>Available locations : </b>
   <br />
   <br />
-  <h:dataTable value="#{actionIndex.getLocationList()}" var="location">
+  <h:dataTable value="#{actionIndex.locationList}" var="location">
     <h:column>
-      <h:outputText value="#{location}"/>
+      <f:facet name="header">Location</f:facet>  
+      <h:outputText value="#{location.locationName}"/>
+    </h:column>
+    <h:column>
+      <f:facet name="header">Start Date</f:facet>  
+      <h:outputText value="#{location.minDate}"/>
+    </h:column>
+    <h:column>
+      <f:facet name="header">End Date</f:facet>  
+      <h:outputText value="#{location.maxDate}"/>
     </h:column>
   </h:dataTable>
 </body>

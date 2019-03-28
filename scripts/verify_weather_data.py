@@ -4,7 +4,7 @@ for the given locations and periods
 """
 
 from datetime import datetime, timedelta
-import MySQLdb
+import pymysql as MySQLdb
 
 
 LOCATIONS  = ["rotterdam"]
@@ -13,8 +13,8 @@ END_DATE   = "20111231"     # YYYYMMDD of last report
 
 DB_db    = "localhost"
 DB_table = "powertac_weather"
-DB_user  = "localUsername"
-DB_pass  = "localPassword"
+DB_user  = "powertac"
+DB_pass  = "password"
 
 
 def check_location(location):
@@ -45,29 +45,30 @@ def check_location(location):
     end_date = datetime.strptime(END_DATE, "%Y%m%d") + timedelta(hours=23)
     if len(result) != 0:
         print
-        print "There are missing reports for %s for the following dates :\n"
+        print("There are missing reports for %s for the following dates :\n")
         for count, date in enumerate(result):
-            print "", date
+            print("", date)
             if count > 10:
-                print " ......."
+                print(" .......")
                 break
         print
-        print "In total %s reports were missing" % len(result)
+        print("In total %s reports were missing" % len(result))
         print 
     elif len(rows) == 0:
         print
-        print "For location '%s', period %s - %s : no reports found !!" % (
-                location, START_DATE, END_DATE)
+        print("For location '%s', period %s - %s : no reports found !!" % (
+                location, START_DATE, END_DATE))
         print
     elif last != end_date:
         print
-        print "There reports for %s ended early : %s" % (location, date)
-        print 
+        print("There reports for %s ended early : %s" % (location, date))
+        print
     else:
         print
-        print "For location '%s', period %s - %s : all reports present" % (
-                location, START_DATE, END_DATE)
+        print("For location '%s', period %s - %s : all reports present" % (
+                location, START_DATE, END_DATE))
         print
+
 
     con.close() 
 

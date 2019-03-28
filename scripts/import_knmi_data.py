@@ -1,10 +1,12 @@
 """
 This script imports the data from KNMI text files defined in DATA_FILES.
-You need to setup the DB before
+You need to setup the DB before by 
+following the steps in README and then running create_weather_tables.py
 """
 
 from datetime import datetime, timedelta
-import MySQLdb
+import pymysql as MySQLdb
+import os
 
 
 LOCATION   = "rotterdam"
@@ -13,17 +15,17 @@ END_DATE   = "20111231" # YYYYMMDD of last report
 
 DB_db    = "localhost"
 DB_table = "powertac_weather"
-DB_user  = "localUsername"
-DB_pass  = "localPassword"
+DB_user  = "powertac"
+DB_pass  = "password"
 
-DATA_FILES = ["uurgeg_344_2001-2010.txt", "uurgeg_344_2011-2020.txt"]
+FILE_NAMES = ["uurgeg_344_2001-2010.txt", "uurgeg_344_2011-2020.txt"]
 
 INDEXES=[-1]*6
 
 
 def get_indexes(line):
     parts = line.split(",")
-    parts = map(lambda x: x.strip(), parts)
+    parts = list(map(lambda x: x.strip(), parts))
 
     INDEXES[0] = parts.index("YYYYMMDD")    # date
     INDEXES[1] = parts.index("HH")          # hour
@@ -40,7 +42,7 @@ def parse_file(file_name):
     finally:
         f.close()
 
-    con = MySQLdb.connect(DB_db, DB_user, DB_pass, DB_table)
+    con = MySQLdb.Connection(DB_db, DB_user, DB_pass, DB_table)        
     cur = con.cursor()
 
     prev_dir = 0
@@ -84,28 +86,31 @@ def parse_file(file_name):
                     "temp, windSpeed, windDir, cloudCover) VALUES " \
                     "('%s', '%s', %s, %s, %s, '%s')" % (
                      date, LOCATION, temp, speed, dir, cover)
-        except Exception, e:
-            print 
-            print e
-            print date, dir, speed, temp, cover
+
+        except(Exception, e):     
+            print(e)
+            print(date, dir, speed, temp, cover)
             continue
 
         try:
             cur.execute(sql)
             con.commit()
-        except MySQLdb.IntegrityError, e:
+
+        except(MySQLdb.IntegrityError, e):
             pass
-        except Exception, e:
-            print
-            print e
-            print sql
+        except(Exception, e):
+            print(e)
+            print(sql)
 
     con.close()
 
 
 def main():
+    DATA_FILES = [ os.getcwd()+'/data/'+name for name in FILE_NAMES ]
+    print(DATA_FILES)
     for file in DATA_FILES:
         parse_file(file)
+
 
 
 if __name__ == "__main__":

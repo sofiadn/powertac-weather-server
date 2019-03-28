@@ -5,7 +5,7 @@ Be careful, its very inefficient, could run for days.
 
 from datetime import datetime, timedelta
 import math
-import MySQLdb
+import pymysql as MySQLdb
 import random
 
 OUT_FILE = "deltas.txt"
@@ -86,7 +86,7 @@ def loop(current):
 
 def main():
     if len(DELTAS) < len(TARGETS):
-        print "DELTAS smaller than TARGETS"
+        print("DELTAS smaller than TARGETS")
         return
 
     errors = [0.0] * len(TARGETS) 
@@ -102,17 +102,17 @@ def main():
         change = 1 - max(MAX_ERROR, abs(diff) / 5)
 
         print
-        print current, DELTAS[current], change
-        print error, TARGETS[current]
-        print ("%.6f" % diff), 
+        print(current, DELTAS[current], change)
+        print(error, TARGETS[current])
+        print ("%.6f" % diff)
         if diff > MAX_ERROR:
-            print "diff larger"
+            print("diff larger")
             DELTAS[current] = DELTAS[current] * change
         elif diff < -MAX_ERROR:
-            print "diff smaller"
+            print("diff smaller")
             DELTAS[current] = DELTAS[current] / change
         else:   
-            print "diff OK"
+            print("diff OK")
             with open(OUT_FILE, 'a') as f:
                 f.write("%d %.16f\n" % (current, DELTAS[current]))
             errors[current] = error
@@ -122,11 +122,11 @@ def main():
             break
 
     print
-    print len(errors), len(DELTAS)
+    print (len(errors), len(DELTAS))
     print
-    print errors
+    print(errors)
     print
-    print DELTAS
+    print(DELTAS)
 
 if __name__ == "__main__":
     main()

@@ -232,7 +232,7 @@ public class Parser
   {
     List<Location> locations;
     try {
-      locations = Location.getAvailableLocations();
+      locations = new Location().getAvailableLocations();
     }
     catch (Exception ignored) {
       return "Query Failure";
